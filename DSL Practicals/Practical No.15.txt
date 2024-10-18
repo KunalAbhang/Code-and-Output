@@ -1,0 +1,171 @@
+#include <iostream>
+#include <thread>
+#include <chrono>
+using namespace std;
+
+const int MAX = 5;
+
+class PizzaParlour {
+    int front, rear;
+    int orders[MAX];
+public:
+    PizzaParlour() {
+        front = rear = -1;
+    }
+    bool addOrder(int data);
+    void serveOrder();
+    void display();
+};
+
+bool PizzaParlour::addOrder(int id) {
+    if (rear == -1) { // Empty queue
+        front = rear = 0;
+        orders[rear] = id;
+        return true;
+    } else {
+        int pos = (rear + 1) % MAX;
+        if (pos == front) { // Queue is full
+            cout << "\nCafe is Full. Please wait.\n";
+            return false;
+        } else {
+            rear = pos;
+            orders[rear] = id;
+            return true;
+        }
+    }
+}
+
+void PizzaParlour::serveOrder() {
+    if (front == -1) { // Queue is empty
+        cout << "\nNo Orders in Cafe. [Cafe is Empty]\n";
+        return;
+    } else {
+        cout << "\nOrder No. " << orders[front] << " is processed.\n";
+        if (front == rear) { // Only one order
+            front = rear = -1;
+        } else {
+            front = (front + 1) % MAX;
+        }
+    }
+}
+
+void PizzaParlour::display() {
+    if (front == -1) { // Queue is empty
+        cout << "\nCafe is Empty. No orders.\n";
+        return;
+    } else {
+        cout << "Order Id's: \n";
+        for (int i = front; i != rear; i = (i + 1) % MAX) {
+            cout << orders[i] << "  ";
+        }
+        cout << orders[rear]; // Print the last order
+    }
+}
+
+void intro() {
+    const char name[] = "\n Vaibhav Cafe \n";
+    for (int i = 0; name[i] != '\0'; i++) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        cout << name[i];
+    }
+}
+
+int main() {
+    int ch, id = 0;
+    PizzaParlour q;
+
+    do {
+        cout << "\n-----------------";
+        intro();
+        cout << "-----------------";
+        cout << "\n****Menu*****\n";
+        cout << "1. Accept order\n";
+        cout << "2. Serve order\n";
+        cout << "3. Display orders\n";
+        cout << "4. Exit";
+        
+        cout << "\nChoice: ";
+        cin >> ch;
+
+        switch (ch) {
+            case 1:
+                id++;
+                if (q.addOrder(id)) {
+                    cout << "Thank you for your order. Order id is: " << id << "\n";
+                } else {
+                    id--;
+                }
+                break;
+
+            case 2:
+                q.serveOrder();
+                break;
+
+            case 3:
+                q.display();
+                break;
+
+            case 4:
+                cout << "\nThank You. Keep Visiting.";
+                break;
+
+            default:
+                cout << "\nInvalid choice. Please try again.\n";
+        }
+    } while (ch != 4);
+
+    return 0;
+}
+
+
+
+OUTPUT -
+
+-----------------
+ SRTTC  Cafe 
+-----------------
+****Menu*****
+1. Accept order
+2. Serve order
+3. Display orders
+4. Exit
+Choice: 1
+Thank you for your order. Order id is: 1
+
+-----------------
+ SRTTC  Cafe 
+-----------------
+****Menu*****
+1. Accept order
+2. Serve order
+3. Display orders
+4. Exit
+Choice: 2
+
+Order No. 1 is processed.
+
+-----------------
+ SRTTC  Cafe 
+-----------------
+****Menu*****
+1. Accept order
+2. Serve order
+3. Display orders
+4. Exit
+Choice: 3
+
+Cafe is Empty. No orders.
+
+-----------------
+ SRTTC  Cafe 
+-----------------
+****Menu*****
+1. Accept order
+2. Serve order
+3. Display orders
+4. Exit
+Choice: 4
+
+Thank You. Keep Visiting.
+
+=== Code Execution Successful ===
